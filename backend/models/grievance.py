@@ -1,7 +1,8 @@
 # backend/models/grievance.py
-from sqlalchemy import Column, Integer, String, Text, DateTime
 from datetime import datetime
+
 from database import Base
+from sqlalchemy import Column, DateTime, Integer, String, Text
 
 class Grievance(Base):
     __tablename__ = "grievances"

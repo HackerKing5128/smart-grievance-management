@@ -1,10 +1,10 @@
 # backend/routers/grievance.py
 from database import get_db
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas import GrievanceCreate, GrievanceResponse
+from fastapi import APIRouter, Depends, HTTPException
 from models.grievance import Grievance
+from schemas import GrievanceCreate, GrievanceResponse
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/grievance", tags=["Grievance"])
 
