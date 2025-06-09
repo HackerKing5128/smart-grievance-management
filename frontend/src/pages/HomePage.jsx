@@ -1,125 +1,240 @@
-import React from "react";
+"use client"
 
-export default function HomePage() {
+import { useState } from "react"
+import { MessageSquare, Shield, Clock, BarChart3, Menu, X } from "lucide-react"
+import GrievanceModal from "../components/GrievanceModal"
+
+const HomePage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Header */}
-      <header className="sticky top-0 z-30 bg-white shadow-sm w-full">
-        <nav className="max-w-7xl w-full mx-auto flex items-center justify-between py-4 px-4 md:px-8">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-blue-700 tracking-tight">Smart Grievance</span>
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Navigation */}
+      <nav className="bg-gray-800 border-b border-gray-700 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <MessageSquare className="h-8 w-8 text-blue-400 mr-3" />
+              <span className="text-xl font-bold text-white">Smart Grievance</span>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-8">
+                <a
+                  href="#home"
+                  className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Home
+                </a>
+                <a
+                  href="#about"
+                  className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  About Us
+                </a>
+                <a
+                  href="#contact"
+                  className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Contact
+                </a>
+                <a
+                  href="/admin/login"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Admin Login
+                </a>
+              </div>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-gray-400 hover:text-white p-2"
+              >
+                {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
           </div>
-          <ul className="hidden md:flex gap-8 text-gray-700 font-medium">
-            <li><a href="#" className="hover:text-blue-700">Home</a></li>
-            <li><a href="#about" className="hover:text-blue-700">About</a></li>
-            <li><a href="#contact" className="hover:text-blue-700">Contact</a></li>
-          </ul>
-          <div className="flex gap-2">
-            <button className="px-4 py-2 rounded text-blue-700 border border-blue-700 hover:bg-blue-50 transition">Login</button>
-            <button className="px-4 py-2 rounded bg-blue-700 text-white font-semibold hover:bg-blue-800 transition">Sign Up</button>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-gray-800 border-t border-gray-700">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              <a href="#home" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">
+                Home
+              </a>
+              <a href="#about" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">
+                About Us
+              </a>
+              <a href="#contact" className="text-gray-300 hover:text-white block px-3 py-2 text-base font-medium">
+                Contact
+              </a>
+              <a
+                href="/admin/login"
+                className="bg-blue-600 hover:bg-blue-700 text-white block px-3 py-2 text-base font-medium rounded-md"
+              >
+                Admin Login
+              </a>
+            </div>
           </div>
-        </nav>
-      </header>
+        )}
+      </nav>
 
       {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center flex-1 text-center py-16 bg-gradient-to-b from-blue-50 to-white w-full">
-        <div className="max-w-7xl w-full mx-auto px-4 md:px-8">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-blue-800 mb-4">Your Voice. Our Priority.</h1>
-          <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-2xl">Easily submit and track public grievances with our AI-powered smart system for efficient redressal.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-6 py-3 bg-blue-700 text-white rounded font-semibold hover:bg-blue-800 transition">Submit Complaint</button>
-            <a href="#about" className="px-6 py-3 border border-blue-700 text-blue-700 rounded font-semibold hover:bg-blue-50 transition">Learn More</a>
+      <section id="home" className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+              Your Voice, <span className="text-blue-400">Our Priority</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              Submit and track your grievances with our AI-powered smart classification system for efficient resolution
+              and transparency.
+            </p>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Submit Grievance
+            </button>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-16">
-        <div className="max-w-7xl w-full mx-auto px-4 md:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-blue-800 mb-4">What is Smart Grievance Management?</h2>
-          <p className="text-gray-700 max-w-3xl mb-8">
-            This platform enables citizens to file complaints that are automatically classified and routed to the right department using Natural Language Processing (NLP). Designed for transparency, efficiency, and accountability, users can track status in real-time and receive timely resolution updates.
-          </p>
-        </div>
-      </section>
+      <section id="about" className="py-20 bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">How Our System Works</h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Our AI-powered grievance management system automatically classifies and routes complaints to the
+              appropriate departments for faster resolution.
+            </p>
+          </div>
 
-      {/* How It Works Section */}
-      <section className="bg-white py-16 w-full">
-        <div className="max-w-7xl w-full mx-auto px-4 md:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-blue-800 mb-8 text-center">How It Works</h2>
-          <div className="flex flex-col md:flex-row justify-center gap-8">
-            <div className="flex-1 flex flex-col items-center">
-              <div className="bg-blue-100 rounded-full p-4 mb-2">
-                <span className="text-3xl">📝</span>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="bg-blue-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="h-8 w-8 text-white" />
               </div>
-              <h3 className="font-semibold text-lg mb-1">Step 1</h3>
-              <p className="text-gray-600 text-center">Submit your complaint via form or chat</p>
+              <h3 className="text-xl font-semibold text-white mb-2">Submit Complaint</h3>
+              <p className="text-gray-300">Fill out our simple form with your grievance details</p>
             </div>
-            <div className="flex-1 flex flex-col items-center">
-              <div className="bg-blue-100 rounded-full p-4 mb-2">
-                <span className="text-3xl">🤖</span>
+
+            <div className="text-center">
+              <div className="bg-green-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Shield className="h-8 w-8 text-white" />
               </div>
-              <h3 className="font-semibold text-lg mb-1">Step 2</h3>
-              <p className="text-gray-600 text-center">Our AI classifies and routes it instantly</p>
+              <h3 className="text-xl font-semibold text-white mb-2">AI Classification</h3>
+              <p className="text-gray-300">Our AI automatically categorizes and routes your complaint</p>
             </div>
-            <div className="flex-1 flex flex-col items-center">
-              <div className="bg-blue-100 rounded-full p-4 mb-2">
-                <span className="text-3xl">📈</span>
+
+            <div className="text-center">
+              <div className="bg-yellow-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Clock className="h-8 w-8 text-white" />
               </div>
-              <h3 className="font-semibold text-lg mb-1">Step 3</h3>
-              <p className="text-gray-600 text-center">Track progress and get timely updates</p>
+              <h3 className="text-xl font-semibold text-white mb-2">Track Progress</h3>
+              <p className="text-gray-300">Monitor your complaint status in real-time</p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-purple-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <BarChart3 className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Get Resolution</h3>
+              <p className="text-gray-300">Receive updates and resolution from the relevant department</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Login / Signup Section */}
-      <section className="py-16">
-        <div className="max-w-7xl w-full mx-auto px-4 md:px-8 flex flex-col md:flex-row gap-8">
-          <div className="flex-1 bg-blue-50 rounded-lg p-8 flex flex-col items-center">
-            <h3 className="text-xl font-bold text-blue-700 mb-2">Citizen Portal</h3>
-            <p className="text-gray-700 mb-4">Login to file or track complaints</p>
-            <button className="px-6 py-2 bg-blue-700 text-white rounded font-semibold hover:bg-blue-800 transition">Citizen Login / Signup</button>
+      {/* Benefits Section */}
+      <section className="py-20 bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Our Platform?</h2>
           </div>
-          <div className="flex-1 bg-gray-100 rounded-lg p-8 flex flex-col items-center">
-            <h3 className="text-xl font-bold text-blue-700 mb-2">Admin / Staff Portal</h3>
-            <p className="text-gray-700 mb-4">Access complaint dashboard and analytics</p>
-            <button className="px-6 py-2 bg-blue-700 text-white rounded font-semibold hover:bg-blue-800 transition">Admin Login</button>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+              <h3 className="text-xl font-semibold text-white mb-3">Transparency</h3>
+              <p className="text-gray-300">
+                Track your complaint from submission to resolution with complete transparency and regular updates.
+              </p>
+            </div>
+
+            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+              <h3 className="text-xl font-semibold text-white mb-3">Efficiency</h3>
+              <p className="text-gray-300">
+                AI-powered classification ensures your complaint reaches the right department immediately.
+              </p>
+            </div>
+
+            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+              <h3 className="text-xl font-semibold text-white mb-3">Accountability</h3>
+              <p className="text-gray-300">
+                Comprehensive analytics and reporting ensure accountability at every level.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Impact / Testimonial Section (Optional) */}
-      <section className="py-12">
-        <div className="max-w-7xl w-full mx-auto px-4 md:px-8">
-          <div className="flex flex-col md:flex-row gap-8 items-center justify-between">
-            <div className="flex-1">
-              <h4 className="text-lg font-semibold text-blue-700 mb-2">Impact</h4>
-              <p className="text-2xl font-bold text-gray-800 mb-2">10,000+ complaints resolved</p>
-              <p className="text-gray-600">Empowering citizens and building trust in governance.</p>
-            </div>
-            <div className="flex-1">
-              <blockquote className="italic text-gray-700 border-l-4 border-blue-700 pl-4 mb-2">“The platform made it so easy to get my issue resolved!”</blockquote>
-              <span className="text-gray-500">— A Satisfied Citizen</span>
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Need Help?</h2>
+            <p className="text-xl text-gray-300 mb-8">Contact our support team for assistance with your grievances</p>
+            <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
+              <div className="text-center">
+                <p className="text-gray-300">Email</p>
+                <p className="text-white font-semibold">support@smartgrievance.gov</p>
+              </div>
+              <div className="text-center">
+                <p className="text-gray-300">Phone</p>
+                <p className="text-white font-semibold">1800-123-4567</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t py-6 mt-auto w-full">
-        <div className="max-w-7xl w-full mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-8">
-          <div className="flex gap-4 mb-2 md:mb-0">
-            <a href="#" className="text-gray-600 hover:text-blue-700">Privacy Policy</a>
-            <a href="#" className="text-gray-600 hover:text-blue-700">Terms of Use</a>
-            <a href="#contact" className="text-gray-600 hover:text-blue-700">Contact Support</a>
+      <footer className="bg-gray-900 border-t border-gray-700 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 md:mb-0">
+              <MessageSquare className="h-6 w-6 text-blue-400 mr-2" />
+              <span className="text-white font-semibold">Smart Grievance Management</span>
+            </div>
+            <div className="flex space-x-6">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                Privacy Policy
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                Terms of Service
+              </a>
+              <a href="#contact" className="text-gray-400 hover:text-white transition-colors">
+                Contact
+              </a>
+            </div>
           </div>
-          <div className="flex gap-3">
-            <a href="#" aria-label="Twitter" className="text-gray-400 hover:text-blue-700"><span className="text-xl">🐦</span></a>
-            <a href="#" aria-label="Facebook" className="text-gray-400 hover:text-blue-700"><span className="text-xl">📘</span></a>
+          <div className="mt-4 pt-4 border-t border-gray-700 text-center">
+            <p className="text-gray-400">© 2024 Smart Grievance Management System. All rights reserved.</p>
           </div>
         </div>
       </footer>
+
+      {/* Grievance Modal */}
+      <GrievanceModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
-  );
+  )
 }
+
+export default HomePage

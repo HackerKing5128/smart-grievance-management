@@ -1,10 +1,24 @@
-import React from "react";
-import HomePage from "./pages/HomePage";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import HomePage from "./pages/HomePage"
+import AdminDashboard from "./pages/AdminDashboard"
+import AdminLogin from "./pages/AdminLogin"
+import { AuthProvider } from "./contexts/AuthContext"
+import "./App.css"
 
-export default function App() {
+function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <HomePage />
-    </div>
-  );
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen bg-gray-900">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
+  )
 }
+
+export default App
