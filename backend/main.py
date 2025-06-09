@@ -2,13 +2,27 @@
 from typing import List, Optional
 
 from database import engine, get_db
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Depends, FastAPI, HTTPException
 from models import grievance as grievance_model
 from routers import grievance
 from schemas import GrievanceCreate, GrievanceResponse, GrievanceUpdate
 from sqlalchemy.orm import Session
 
+# Create FastAPI app
 app = FastAPI()
+# Add CORS middleware
+origins = [
+    "http://localhost:5173",  # for local development
+
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Create DB tables
 grievance_model.Base.metadata.create_all(bind=engine)
