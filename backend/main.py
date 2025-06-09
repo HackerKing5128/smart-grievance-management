@@ -1,5 +1,5 @@
 # backend/main.py
-from typing import List
+from typing import List, Optional
 
 from database import engine, get_db
 from fastapi import Depends, FastAPI, HTTPException
@@ -11,9 +11,6 @@ from sqlalchemy.orm import Session
 app = FastAPI()
 
 # Create DB tables
-
-### grievance_model.Base.metadata.drop_all(bind=engine)  # DANGER: Drops all tables!
-
 grievance_model.Base.metadata.create_all(bind=engine)
 
 # Include routes
@@ -36,10 +33,12 @@ def submit_grievance(grievance: GrievanceCreate, db: Session = Depends(get_db)):
 
 # GET endpoint - get all grievances
 @app.get("/grievances", response_model=List[GrievanceResponse])
-def get_all_grievances(db: Session = Depends(get_db)):
-    """Retrieve all grievance records from the database."""
-    grievances = db.query(grievance_model.Grievance).all()
-    return grievances
+def get_all_grievances(department: Optional[str] = None, db: Session = Depends(get_db)):
+    """Retrieve all grievance records from the database optionally filtered by department."""
+    grievances = db.query(grievance_model.Grievance)
+    if department:
+        grievances = grievances.filter(grievance_model.Grievance.department == department)
+    return grievances.all()
 
 # GET endpoint - get grievance by ID
 @app.get("/grievance/{grievance_id}", response_model=GrievanceResponse)
@@ -56,7 +55,11 @@ def update_grievance(grievance_id: int, update_data: GrievanceUpdate, db: Sessio
     if not grievance:
         raise HTTPException(status_code=404, detail="Grievance not found")
 
-    grievance.status = update_data.status
+    if update_data.status is not None:
+        grievance.status = update_data.status
+    if update_data.department is not None:
+        grievance.department = update_data.department
+        
     db.commit()
     db.refresh(grievance)
     return grievance

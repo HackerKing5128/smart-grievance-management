@@ -13,6 +13,7 @@ class GrievanceCreate(BaseModel):
 
 class GrievanceResponse(GrievanceCreate):
     id: int
+    department: Optional[str] = None
     status: str
     submitted_at: datetime
 
@@ -25,6 +26,7 @@ class GrievanceResponse(BaseModel):
     name: str
     email: str
     complaint: str
+    department: Optional[str] = None
     status: str
     submitted_at: datetime
 
@@ -37,6 +39,15 @@ class GrievanceStatus(str, Enum):
     in_progress = "In Progress"
     resolved = "Resolved"
 
+# Model for all possible departments
+class Department(str, Enum):
+    customer_support = "Customer Support"
+    technical_support = "Technical Support"
+    quality_assurance = "Quality Assurance (QA)"
+    returns_and_refunds = "Returns, Refunds, and Warranty"
+    shipping_logistics = "Shipping and Logistics"
+
 # Request model for updating a grievance
 class GrievanceUpdate(BaseModel):
-    status: GrievanceStatus
+    status: Optional[GrievanceStatus] = None
+    department: Optional[Department] = None

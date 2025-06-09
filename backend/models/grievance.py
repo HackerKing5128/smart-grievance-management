@@ -11,5 +11,6 @@ class Grievance(Base):
     name = Column(String(100), nullable=False)
     email = Column(String(100), nullable=False)
     complaint = Column(Text, nullable=False)
+    department = Column(String(100), nullable=True)
     status = Column(String(20), default="Pending")
     submitted_at = Column(DateTime, default=datetime.utcnow)
