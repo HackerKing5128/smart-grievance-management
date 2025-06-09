@@ -2,8 +2,7 @@
 
 import { useState } from "react"
 import { X, Send, CheckCircle } from "lucide-react"
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { api } from "../utils/api"
 
 const GrievanceModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -28,25 +27,33 @@ const GrievanceModal = ({ isOpen, onClose }) => {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch(`${BASE_URL}/grievance/submit`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+      console.log("Submitting grievance:", formData)
+      const result = await api.submitGrievance(formData)
+      console.log("Submission result:", result)
 
-      if (response.ok) {
-        const result = await response.json()
+      // Check if the result has the expected structure
+      if (result && result.data && result.data.id) {
         setGrievanceId(result.data.id)
         setIsSubmitted(true)
         setFormData({ name: "", email: "", complaint: "" })
       } else {
-        alert("Failed to submit grievance. Please try again.")
+        // If structure is different, try to extract ID differently
+        const id = result.data?.id || result.id || "Unknown"
+        setGrievanceId(id)
+        setIsSubmitted(true)
+        setFormData({ name: "", email: "", complaint: "" })
       }
     } catch (error) {
       console.error("Error submitting grievance:", error)
-      alert("Failed to submit grievance. Please try again.")
+
+      // More specific error messages
+      if (error.message.includes("Failed to fetch")) {
+        alert("Cannot connect to server. Please check if the backend is running on http://localhost:8000")
+      } else if (error.message.includes("CORS")) {
+        alert("CORS error. Please check your backend CORS configuration.")
+      } else {
+        alert(`Failed to submit grievance: ${error.message}`)
+      }
     } finally {
       setIsSubmitting(false)
     }

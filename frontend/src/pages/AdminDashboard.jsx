@@ -14,11 +14,12 @@ import {
   MessageSquare,
   Download,
   Eye,
-  Edit,
   Trash2,
   X,
 } from "lucide-react"
 import { useAuth } from "../contexts/AuthContext"
+// Add import at the top
+import { api } from "../utils/api"
 
 const AdminDashboard = () => {
   const { isAuthenticated, logout, loading } = useAuth()
@@ -37,74 +38,56 @@ const AdminDashboard = () => {
   const [selectedGrievance, setSelectedGrievance] = useState(null)
   const [showFilters, setShowFilters] = useState(false)
 
-  // Mock data for demonstration
-  const mockGrievances = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      complaint: "Poor road conditions in downtown area causing traffic issues and vehicle damage.",
-      department: "Shipping and Logistics",
-      status: "Pending",
-      submitted_at: "2024-01-15T10:30:00Z",
-      priority: "High",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      complaint: "Water supply interruption in residential area for the past 3 days.",
-      department: "Customer Support",
-      status: "In Progress",
-      submitted_at: "2024-01-14T14:20:00Z",
-      priority: "High",
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      email: "mike@example.com",
-      complaint: "Defective product received, requesting replacement or refund.",
-      department: "Returns, Refunds, and Warranty",
-      status: "Resolved",
-      submitted_at: "2024-01-13T09:15:00Z",
-      priority: "Medium",
-    },
-    {
-      id: 4,
-      name: "Sarah Wilson",
-      email: "sarah@example.com",
-      complaint: "Technical issues with online portal, unable to access services.",
-      department: "Technical Support",
-      status: "Pending",
-      submitted_at: "2024-01-12T16:45:00Z",
-      priority: "Medium",
-    },
-    {
-      id: 5,
-      name: "David Brown",
-      email: "david@example.com",
-      complaint: "Quality issues with recent purchase, product not meeting specifications.",
-      department: "Quality Assurance (QA)",
-      status: "In Progress",
-      submitted_at: "2024-01-11T11:30:00Z",
-      priority: "Low",
-    },
-  ]
+  useEffect(() => {
+    fetchGrievances()
+  }, [])
+
+  // Replace the fetchGrievances function:
+  const fetchGrievances = async () => {
+    setIsLoading(true)
+    try {
+      const data = await api.getGrievances()
+      setGrievances(data)
+      setFilteredGrievances(data)
+    } catch (error) {
+      console.error("Error fetching grievances:", error)
+      alert("Failed to load grievances. Please check if the backend is running.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Replace the updateGrievanceStatus function:
+  const updateGrievanceStatus = async (grievanceId, newStatus) => {
+    try {
+      await api.updateGrievance(grievanceId, { status: newStatus })
+      // Refresh the grievances list
+      fetchGrievances()
+    } catch (error) {
+      console.error("Error updating grievance:", error)
+      alert("Failed to update grievance status")
+    }
+  }
+
+  // Replace the deleteGrievance function:
+  const deleteGrievanceHandler = async (grievanceId) => {
+    if (window.confirm("Are you sure you want to delete this grievance?")) {
+      try {
+        await api.deleteGrievance(grievanceId)
+        // Refresh the grievances list
+        fetchGrievances()
+      } catch (error) {
+        console.error("Error deleting grievance:", error)
+        alert("Failed to delete grievance")
+      }
+    }
+  }
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       navigate("/admin/login")
     }
   }, [isAuthenticated, loading, navigate])
-
-  useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setGrievances(mockGrievances)
-      setFilteredGrievances(mockGrievances)
-      setIsLoading(false)
-    }, 1000)
-  }, [])
 
   useEffect(() => {
     let filtered = grievances
@@ -138,24 +121,26 @@ const AdminDashboard = () => {
     // Apply date range filter
     if (filters.dateRange) {
       const now = new Date()
-      let filterDate = new Date()
+      const filterDate = new Date()
 
       switch (filters.dateRange) {
         case "24h":
-          filterDate.setDate(now.getDate() - 1)
+          const filterDate24 = new Date()
+          filterDate24.setDate(now.getDate() - 1)
+          filtered = filtered.filter((grievance) => new Date(grievance.submitted_at) >= filterDate24)
           break
         case "7d":
-          filterDate.setDate(now.getDate() - 7)
+          const filterDate7 = new Date()
+          filterDate7.setDate(now.getDate() - 7)
+          filtered = filtered.filter((grievance) => new Date(grievance.submitted_at) >= filterDate7)
           break
         case "30d":
-          filterDate.setDate(now.getDate() - 30)
+          const filterDate30 = new Date()
+          filterDate30.setDate(now.getDate() - 30)
+          filtered = filtered.filter((grievance) => new Date(grievance.submitted_at) >= filterDate30)
           break
         default:
-          filterDate = null
-      }
-
-      if (filterDate) {
-        filtered = filtered.filter((grievance) => new Date(grievance.submitted_at) >= filterDate)
+          break
       }
     }
 
@@ -442,13 +427,25 @@ const AdminDashboard = () => {
                         <button
                           onClick={() => setSelectedGrievance(grievance)}
                           className="text-blue-400 hover:text-blue-300 transition-colors"
+                          title="View Details"
                         >
                           <Eye className="h-4 w-4" />
                         </button>
-                        <button className="text-yellow-400 hover:text-yellow-300 transition-colors">
-                          <Edit className="h-4 w-4" />
-                        </button>
-                        <button className="text-red-400 hover:text-red-300 transition-colors">
+                        <select
+                          value={grievance.status}
+                          onChange={(e) => updateGrievanceStatus(grievance.id, e.target.value)}
+                          className="text-xs bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white"
+                          title="Update Status"
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="In Progress">In Progress</option>
+                          <option value="Resolved">Resolved</option>
+                        </select>
+                        <button
+                          onClick={() => deleteGrievanceHandler(grievance.id)}
+                          className="text-red-400 hover:text-red-300 transition-colors"
+                          title="Delete"
+                        >
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
@@ -531,9 +528,18 @@ const AdminDashboard = () => {
                 >
                   Close
                 </button>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors">
-                  Update Status
-                </button>
+                <select
+                  value={selectedGrievance.status}
+                  onChange={(e) => {
+                    updateGrievanceStatus(selectedGrievance.id, e.target.value)
+                    setSelectedGrievance({ ...selectedGrievance, status: e.target.value })
+                  }}
+                  className="bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Resolved">Resolved</option>
+                </select>
               </div>
             </div>
           </div>
