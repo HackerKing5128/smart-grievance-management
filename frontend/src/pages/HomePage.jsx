@@ -93,7 +93,7 @@ const HomePage = () => {
               Your Voice, <span className="text-blue-400">Our Priority</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Submit and track your grievances with our AI-powered smart classification system for efficient resolution
+              Submit and track your grievances with our AI-powered Smart Grievance System for efficient resolution
               and transparency.
             </p>
             <button
@@ -194,11 +194,11 @@ const HomePage = () => {
             <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
               <div className="text-center">
                 <p className="text-gray-300">Email</p>
-                <p className="text-white font-semibold">support@smartgrievance.gov</p>
+                <p className="text-white font-semibold">support@smartgrievance.com</p>
               </div>
               <div className="text-center">
                 <p className="text-gray-300">Phone</p>
-                <p className="text-white font-semibold">1800-123-4567</p>
+                <p className="text-white font-semibold">xxxx-xxx-xxxx</p>
               </div>
             </div>
           </div>
@@ -226,7 +226,7 @@ const HomePage = () => {
             </div>
           </div>
           <div className="mt-4 pt-4 border-t border-gray-700 text-center">
-            <p className="text-gray-400">© 2024 Smart Grievance Management System. All rights reserved.</p>
+            <p className="text-gray-400">© 2025 Smart Grievance Management System. All rights reserved.</p>
           </div>
         </div>
       </footer>
