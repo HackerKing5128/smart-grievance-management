@@ -517,7 +517,9 @@ const AdminDashboard = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">Complaint Details</label>
                 <div className="bg-gray-700 p-4 rounded-md">
-                  <p className="text-white">{selectedGrievance.complaint}</p>
+                  <pre className="text-white whitespace-pre-wrap font-sans text-sm leading-relaxed">
+                    {selectedGrievance.complaint}
+                  </pre>
                 </div>
               </div>
 
