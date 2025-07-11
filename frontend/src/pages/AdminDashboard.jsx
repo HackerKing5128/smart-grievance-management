@@ -121,24 +121,26 @@ const AdminDashboard = () => {
     // Apply date range filter
     if (filters.dateRange) {
       const now = new Date()
-      const filterDate = new Date()
 
       switch (filters.dateRange) {
-        case "24h":
+        case "24h": {
           const filterDate24 = new Date()
           filterDate24.setDate(now.getDate() - 1)
           filtered = filtered.filter((grievance) => new Date(grievance.submitted_at) >= filterDate24)
           break
-        case "7d":
+        }
+        case "7d": {
           const filterDate7 = new Date()
           filterDate7.setDate(now.getDate() - 7)
           filtered = filtered.filter((grievance) => new Date(grievance.submitted_at) >= filterDate7)
           break
-        case "30d":
+        }
+        case "30d": {
           const filterDate30 = new Date()
           filterDate30.setDate(now.getDate() - 30)
           filtered = filtered.filter((grievance) => new Date(grievance.submitted_at) >= filterDate30)
           break
+        }
         default:
           break
       }
